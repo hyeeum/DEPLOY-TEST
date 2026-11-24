@@ -982,3 +982,246 @@
           flex-wrap: wrap;
         }
       }
+
+
+/* =====================================
+   01. MOUSE SPOTLIGHT
+===================================== */
+
+.spotlight {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+
+  background: radial-gradient(
+    circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    transparent 0%,
+    rgba(0, 0, 0, 0.12) 55%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+
+  mix-blend-mode: multiply;
+}
+
+.spotlight--hero.is-active,
+.spotlight--ending.is-active {
+  opacity: 1;
+}
+
+
+/* =====================================
+   02. HORIZONTAL GALLERY
+===================================== */
+
+.horizontal-section {
+  height: 320vh;
+  background: #111;
+  color: var(--white);
+  overflow: clip;
+}
+
+.horizontal-sticky {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 650px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.horizontal-heading {
+  padding: 35px 8% 20px;
+  flex-shrink: 0;
+}
+
+.horizontal-heading h2 {
+  font-size: clamp(40px, 7vw, 85px);
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+  margin-top: 18px;
+}
+
+.horizontal-heading p {
+  margin-top: 15px;
+  font: 9px "DM Mono", monospace;
+  letter-spacing: 2px;
+  color: #777;
+}
+
+.horizontal-track {
+  display: flex;
+  align-items: center;
+  gap: 35px;
+  width: max-content;
+  padding: 25px 8% 45px;
+  will-change: transform;
+}
+
+.horizontal-card {
+  width: min(42vw, 480px);
+  flex-shrink: 0;
+}
+
+.horizontal-art {
+  width: 100%;
+  aspect-ratio: 5 / 4;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.7s ease;
+}
+
+.horizontal-card:hover .horizontal-art {
+  transform: scale(0.96);
+}
+
+.horizontal-art span {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font: 11px "DM Mono", monospace;
+  color: #fff;
+  z-index: 2;
+}
+
+.horizontal-art--one {
+  background:
+    radial-gradient(circle at 50% 50%, #eee 0 5%, transparent 6%),
+    radial-gradient(circle at 50% 50%, transparent 15%, #999 15.5% 16%, transparent 16.5%),
+    radial-gradient(circle at 50% 50%, transparent 30%, #777 30.5% 31%, transparent 31.5%),
+    linear-gradient(135deg, #383832, #080808);
+}
+
+.horizontal-art--two {
+  background:
+    repeating-conic-gradient(
+      from 20deg,
+      #dedbd2 0deg 1deg,
+      #292923 1deg 12deg
+    );
+  mask-image: none;
+}
+
+.horizontal-art--three {
+  background:
+    radial-gradient(ellipse at 30% 30%, #d5d0c4, transparent 35%),
+    linear-gradient(145deg, #55564d, #111);
+}
+
+.horizontal-art--four {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      #dedbd2 0 2px,
+      #181818 2px 14px
+    );
+}
+
+.horizontal-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding-top: 18px;
+}
+
+.horizontal-info h3 {
+  font-size: 15px;
+  letter-spacing: 1px;
+}
+
+.horizontal-info p {
+  font: 8px "DM Mono", monospace;
+  color: #777;
+  text-align: right;
+}
+
+
+/* =====================================
+   03. CINEMATIC ENDING
+===================================== */
+
+.cinematic-ending {
+  isolation: isolate;
+  background: #050505;
+}
+
+.cinematic-ending::before {
+  content: "";
+  position: absolute;
+  width: 70vw;
+  height: 70vw;
+  max-width: 850px;
+  max-height: 850px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(201, 255, 92, 0.12),
+    transparent 70%
+  );
+  filter: blur(40px);
+  z-index: -1;
+  animation: cinematicGlow 8s ease-in-out infinite alternate;
+}
+
+.cinematic-ending h2 {
+  text-shadow: 0 0 60px rgba(255,255,255,0.05);
+}
+
+.cinematic-ending h2 span {
+  transition: color 1s ease;
+}
+
+.cinematic-ending.ending-visible h2 span {
+  color: var(--accent);
+  -webkit-text-stroke: 0;
+}
+
+@keyframes cinematicGlow {
+  from {
+    transform: translate(-15%, -10%) scale(0.8);
+  }
+  to {
+    transform: translate(15%, 10%) scale(1.2);
+  }
+}
+
+
+/* =====================================
+   04. RESPONSIVE
+===================================== */
+
+@media (max-width: 700px) {
+  .spotlight {
+    display: none;
+  }
+
+  .horizontal-section {
+    height: 260vh;
+  }
+
+  .horizontal-sticky {
+    min-height: 550px;
+  }
+
+  .horizontal-card {
+    width: 72vw;
+  }
+
+  .horizontal-track {
+    gap: 20px;
+  }
+
+  .horizontal-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .horizontal-info p {
+    text-align: left;
+  }
+}

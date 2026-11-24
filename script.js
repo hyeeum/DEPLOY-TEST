@@ -123,3 +123,158 @@
           item.querySelector(".art-inner").style.transform = "";
         });
       });
+
+      
+/* =====================================
+   01. TEXT DECODING
+===================================== */
+
+const decodeElements = document.querySelectorAll(".decode-text");
+
+const decodeCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&";
+
+decodeElements.forEach((element) => {
+  const originalText = element.dataset.text;
+  let animationFrame;
+
+  const decodeObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+
+      let iteration = 0;
+
+      cancelAnimationFrame(animationFrame);
+
+     function animateDecode() {
+        element.textContent = originalText
+            .split("")
+            .map((char, index) => {
+            if (char === " ") return " ";
+            if (index < iteration) return originalText[index];
+
+            return decodeCharacters[
+                Math.floor(Math.random() * decodeCharacters.length)
+            ];
+            })
+            .join("");
+
+        iteration += 0.2;
+
+        if (iteration <= originalText.length) {
+            setTimeout(() => {
+            animationFrame = requestAnimationFrame(animateDecode);
+            }, 35);
+        } else {
+            element.textContent = originalText;
+        }
+    }
+
+      animateDecode();
+      decodeObserver.unobserve(element);
+    });
+  }, { threshold: 0.3 });
+
+  decodeObserver.observe(element);
+});
+
+
+/* =====================================
+   02. MOUSE SPOTLIGHT
+===================================== */
+
+const heroSpotlight = document.querySelector(".spotlight--hero");
+const endingSpotlight = document.querySelector(".spotlight--ending");
+
+const heroSection = document.querySelector(".hero");
+const endingSection = document.querySelector(".cinematic-ending");
+
+window.addEventListener("mousemove", (e) => {
+  [heroSpotlight, endingSpotlight].forEach((spotlight) => {
+    if (!spotlight) return;
+
+    spotlight.style.setProperty("--mouse-x", `${e.clientX}px`);
+    spotlight.style.setProperty("--mouse-y", `${e.clientY}px`);
+  });
+});
+
+function updateSpotlight() {
+  if (!heroSection || !endingSection) return;
+
+  const heroRect = heroSection.getBoundingClientRect();
+  const endingRect = endingSection.getBoundingClientRect();
+
+  const heroVisible =
+    heroRect.top < window.innerHeight * 0.5 &&
+    heroRect.bottom > window.innerHeight * 0.5;
+
+  const endingVisible =
+    endingRect.top < window.innerHeight * 0.5 &&
+    endingRect.bottom > window.innerHeight * 0.5;
+
+  heroSpotlight?.classList.toggle("is-active", heroVisible);
+  endingSpotlight?.classList.toggle("is-active", endingVisible);
+}
+
+window.addEventListener("scroll", updateSpotlight, { passive: true });
+window.addEventListener("resize", updateSpotlight);
+window.addEventListener("load", updateSpotlight);
+
+/* =====================================
+   03. HORIZONTAL SCROLL
+===================================== */
+
+const horizontalSection = document.getElementById("horizontalGallery");
+const horizontalTrack = document.querySelector(".horizontal-track");
+
+function updateHorizontalScroll() {
+  if (!horizontalSection || !horizontalTrack) return;
+
+  const rect = horizontalSection.getBoundingClientRect();
+
+  const sectionScrollHeight =
+    horizontalSection.offsetHeight - window.innerHeight;
+
+  const maxTranslate =
+    horizontalTrack.scrollWidth - window.innerWidth;
+
+  if (sectionScrollHeight <= 0 || maxTranslate <= 0) return;
+
+  const progress = Math.max(
+    0,
+    Math.min(1, -rect.top / sectionScrollHeight)
+  );
+
+  horizontalTrack.style.transform =
+    `translate3d(${-maxTranslate * progress}px, 0, 0)`;
+}
+
+window.addEventListener("scroll", updateHorizontalScroll, {
+  passive: true
+});
+
+window.addEventListener("resize", updateHorizontalScroll);
+
+window.addEventListener("load", updateHorizontalScroll);
+
+
+/* =====================================
+   04. CINEMATIC ENDING
+===================================== */
+
+const cinematicEnding = document.querySelector(".cinematic-ending");
+
+if (cinematicEnding) {
+  const endingObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          cinematicEnding.classList.add("ending-visible");
+          endingObserver.unobserve(cinematicEnding);
+        }
+      });
+    },
+    { threshold: 0.4 }
+  );
+
+  endingObserver.observe(cinematicEnding);
+}
